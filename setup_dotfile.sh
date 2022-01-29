@@ -1,4 +1,4 @@
-# /bin/bash -x
+#!/bin/bash -x
 
 script_dir=$(cd $(dirname $0); pwd)
 
