@@ -104,6 +104,9 @@ command Calendaryv Calendar -view=year -split=vertical -width=27
 command Calendaryh Calendar -view=year -split=horizontal -position=below -height=12
 command Calendarm Calendar -first_day=monday
 
+" REF : https://github.com/simeji/winresizer
+call dein#add('simeji/winresizer')
+
 " Required:
 call dein#end()
 
