@@ -84,6 +84,12 @@ function history-all { history -E 1 }
 setopt noincappendhistory
 setopt nosharehistory
 
+# ssh
+function show_ssh_pubkey {
+ ssh -V
+ for list in `ls /etc/ssh/*.pub`; do echo ssh-keygen -lf ${list} ;ssh-keygen -lf ${list} ; done
+}
+
 # env
 export XDG_CONFIG_HOME=~/.config
 export EDITOR=vim

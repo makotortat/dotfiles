@@ -89,8 +89,8 @@ nnoremap <C-p> :call FzfOmniFiles()<CR>
 " REF : https://blog.monochromegane.com/blog/2013/09/18/ag-and-unite/
 call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
 
-nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
-nnoremap <silent> ,cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
+nnoremap <silent> <Space><Space>g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+nnoremap <silent> <Space><Space><Space> :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
 
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
@@ -98,6 +98,11 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
 endif
 
+" REF : https://github.com/itchyny/calendar.vim
+call dein#add('itchyny/calendar.vim')
+command Calendaryv Calendar -view=year -split=vertical -width=27
+command Calendaryh Calendar -view=year -split=horizontal -position=below -height=12
+command Calendarm Calendar -first_day=monday
 
 " Required:
 call dein#end()
