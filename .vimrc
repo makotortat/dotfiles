@@ -59,8 +59,13 @@ call dein#add('tpope/vim-commentary')
 
 " ctag
 " REF : https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
-set tags=.tags;
 " REF : https://qiita.com/soramugi/items/7014c866b705e2cd0b95
+if executable('ctags')
+  set tags+=.tags;
+  au BufNewFile,BufRead *.c,*.cpp,*.h set tags+=$HOME/c.tags  
+  au BufNewFile,BufRead *.c,*.cpp,*.h !ctags -R --languages=C,C++ -f ~/c.tags `pwd` 2>/dev/null &
+  command TagsGen !ctags -R --languages=C,C++ -f ~/c.tags `pwd` 2>/dev/null &
+endif
 nnoremap <C-]> g<C-]>
 
 " REF : https://github.com/preservim/tagbar
