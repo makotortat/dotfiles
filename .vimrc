@@ -129,6 +129,16 @@ command Calendaryv Calendar -view=year -split=vertical -width=27
 command Calendaryh Calendar -view=year -split=horizontal -position=below -height=12
 command Calendarm Calendar -first_day=monday
 
+" REF : https://github.com/ervandew/supertab
+" When using paste mode, this plugin can not work.
+" call dein#add('ervandew/supertab')
+
+" REF : https://kazuph.hateblo.jp/entry/2013/01/04/005030
+call dein#add('kana/vim-operator-user')
+call dein#add('kana/vim-operator-replace')
+map P <Plug>(operator-replace)
+" P + i + w : replace the word on cursor by reg 0 without update the reg 0
+
 " REF : https://github.com/simeji/winresizer
 call dein#add('simeji/winresizer')
 
