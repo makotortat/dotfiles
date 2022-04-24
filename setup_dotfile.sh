@@ -2,15 +2,7 @@
 
 script_dir=$(cd $(dirname $0); pwd)
 
-setting_zsh () {
-  echo $SHELL | grep "zsh"
-  if [ $? -eq 0 ];
-  then
-    :
-  else
-    echo This script supports only zsh. ; exit;
-  fi
-  DOTFILES=( .zshrc .zshrc.pyenv .tmux.conf )
+make_link_dotfiles () {
   for file in ${DOTFILES[@]}; do
     if [ -e "~/${file}" ];
     then
@@ -19,6 +11,18 @@ setting_zsh () {
       ln -s ${script_dir}/${file} ~/${file}
     fi
   done
+}
+
+setting_zsh () {
+  echo $SHELL | grep "zsh"
+  if [ $? -eq 0 ];
+  then
+    :
+  else
+    echo This script supports only zsh. ; exit;
+  fi
+  DOTFILES=( .zshrc .zshrc.pyenv )
+  make_link_dotfiles
 }
 
 setting_neovim () {
@@ -33,19 +37,24 @@ setting_neovim () {
     mkdir -p ~/.config
     export XDG_CONFIG_HOME=~/.config
   fi
+
   mkdir ~/.vim
   ln -s ~/.vim ~/.config/nvim
   ln -s ~/.vimrc ~/.config/nvim/init.vim
 
   DOTFILES=( .vimrc )
-  for file in ${DOTFILES[@]}; do
-    if [ -e "~/${file}" ];
-    then
-      :
-    else
-      ln -s ${script_dir}/${file} ~/${file}
-    fi
-  done
+  make_link_dotfiles
+}
+
+setting_tmux () {
+  if command -v tmux 1>/dev/null 2>&1; then
+    :
+  else
+    echo "Please install tmux." ; exit;
+  fi
+
+  DOTFILES=( .tmux.conf )
+  make_link_dotfiles
 }
 
 install_dein () {
@@ -54,9 +63,15 @@ install_dein () {
   sh ./installer.sh ~/.cache/dein
 }
 
+install_tpm () {
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+}
+
 setting_zsh
 setting_neovim
+setting_tmux
 install_dein
+install_tpm
 
 exit;
 
