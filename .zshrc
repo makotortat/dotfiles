@@ -94,6 +94,9 @@ function show_ssh_pubkey {
 export XDG_CONFIG_HOME=~/.config
 export EDITOR=vim
 
+# keybind : ctrl + a
+bindkey -e
+
 # REF : https://qiita.com/awakia/items/1d5cd440ce58ef4fb8ae
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 [ -f ~/.zshrc.pyenv ] && source ~/.zshrc.pyenv
