@@ -92,7 +92,11 @@ function show_ssh_pubkey {
 
 # env
 export XDG_CONFIG_HOME=~/.config
-export EDITOR=vim
+if command -v nvim 1>/dev/null 2>&1; then
+  export EDITOR=nvim
+else
+  export EDITOR=vim
+fi
 
 # keybind : ctrl + a
 bindkey -e
