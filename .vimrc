@@ -26,7 +26,7 @@ endif
 set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
 " Required:
-call dein#begin('~/.cache/dein')
+call dein#begin('~/.cache/dein') " install dir.
 
 " Let dein manage dein
 " Required:
@@ -139,8 +139,16 @@ call dein#add('kana/vim-operator-replace')
 map P <Plug>(operator-replace)
 " P + i + w : replace the word on cursor by reg 0 without update the reg 0
 
+" REF : https://github.com/adi/vim-indent-rainbow
+call dein#add('adi/vim-indent-rainbow')
+call togglerb#map("<F9>")
+let g:rainbow_colors_black= [ 238, 239, 240, 241, 242, 243 ]
+let g:rainbow_colors_color= [ 226, 192, 195, 189, 225, 221 ]
+set ts=2
+
 " REF : https://github.com/simeji/winresizer
 call dein#add('simeji/winresizer')
+" Ctrl + e : Resize window
 
 " Required:
 call dein#end()
