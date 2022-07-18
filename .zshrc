@@ -49,6 +49,7 @@ autoload -Uz compinit && compinit
 if command -v nvim 1>/dev/null 2>&1; then
   alias vim='nvim'
   alias vi='nvim'
+  export MANPAGER="col -b -x|nvim -R -c 'set ft=man nolist nomod noma' -"
 fi
 alias ll="ls -l"
 
