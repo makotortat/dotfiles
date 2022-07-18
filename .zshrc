@@ -98,6 +98,17 @@ else
   export EDITOR=vim
 fi
 
+# auto log
+if ls ~/log 1>/dev/null 2>&1; then
+else
+  mkdir ~/log
+fi
+alias start_log='script -fqa ~/log/$(date +%Y%m%d_%H%M%S)_${HOST}_$(whoami)_${TITLE}.log'
+
+# restart shell
+# REF : https://qiita.com/yusabana/items/c4de582c6f85a42817d8
+alias relogin='exec $SHELL -l'
+
 # keybind : ctrl + a
 bindkey -e
 
