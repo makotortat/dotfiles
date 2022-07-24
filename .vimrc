@@ -9,6 +9,7 @@ set cursorline
 set nosmartindent
 set visualbell
 set showmatch
+set noignorecase
 
 " REF : https://vim.blue/visualization-tab-space/
 set listchars=tab:>>-,trail:-,nbsp:+,eol:↲,extends:»,precedes:«,space:␣
