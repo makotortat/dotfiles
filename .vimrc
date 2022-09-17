@@ -51,6 +51,11 @@ xmap M <Plug>(quickhl-manual-reset)
 
 " status line
 call dein#add('itchyny/lightline.vim')
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'absolutepath', 'modified' ] ],
+      \ }
+      \ }
 
 
 " comment out
@@ -73,7 +78,8 @@ nnoremap <C-]> g<C-]>
 call dein#add('preservim/tagbar')
 nmap <F8> :TagbarToggle<CR>
 
-
+" smooth scroll
+" call dein#add('yuttie/comfortable-motion.vim')
 
 " FZF
 " REF : https://github.com/Shougo/dein.vim/issues/74
