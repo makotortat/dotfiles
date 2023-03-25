@@ -153,6 +153,11 @@ let g:rainbow_colors_black= [ 238, 239, 240, 241, 242, 243 ]
 let g:rainbow_colors_color= [ 226, 192, 195, 189, 225, 221 ]
 set ts=2
 
+" REF : https://github.com/luochen1990/rainbow
+"" Target : markdown, lisp, haskell, vim, perl, stylus, css, nerdtree, only
+" call dein#add('luochen1990/rainbow')
+" let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
 " REF : https://github.com/simeji/winresizer
 call dein#add('simeji/winresizer')
 " Ctrl + e : Resize window
