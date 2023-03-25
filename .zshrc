@@ -50,7 +50,9 @@ if command -v nvim 1>/dev/null 2>&1; then
   alias vim='nvim'
   alias vi='nvim'
   # export MANPAGER="col -b -x|nvim -R -c 'set ft=man nolist nomod noma' -"
-  export MANPAGER="/bin/sh -c \"col -b -x|nvim -R -c 'set ft=man nolist nonu noma' -\""
+  if ls /etc/redhat-release 1>/dev/null 2>&1; then
+    export MANPAGER="/bin/sh -c \"col -b -x|nvim -R -c 'set ft=man nolist nonu noma' -\""
+  fi
 fi
 alias ll="ls -l"
 
