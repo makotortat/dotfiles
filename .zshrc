@@ -55,6 +55,8 @@ if command -v nvim 1>/dev/null 2>&1; then
   fi
 fi
 alias ll="ls -l"
+## REF : https://orebibou.com/ja/home/201805/20180503_001/
+alias show_all_commands="whence -pm \"*\""
 
 # OS dependencies
 # REF : https://qiita.com/abetomo/items/3df53752edf2bd0855c9
