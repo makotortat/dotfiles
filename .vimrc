@@ -183,11 +183,40 @@ command Currentfilepath echo expand("%:p")
 command Currentfiledir echo expand("%:h") 
 command Opencurrentfiledir e %:h
 
+" vim -b : edit binary using xxd-format!
+" REF : https://rdera.hatenadiary.org/entry/20081022/1224682665
+augroup BinaryXXD
+  " autocmd!
+  " autocmd BufReadPre  *.bin let &binary =1
+  autocmd BufReadPost * if &binary | silent %!xxd -g 1
+  autocmd BufReadPost * set ft=xxd | endif
+  autocmd BufWritePre * if &binary | %!xxd -r | endif
+  autocmd BufWritePost * if &binary | silent %!xxd -g 1
+  autocmd BufWritePost * set nomod | endif
+augroup END
 
 " REF : https://tm.root-n.com/unix:command:vim:vimrc_include
 if filereadable(expand('~/.vimrc.local'))
   source ~/.vimrc.local
 endif
+
+" show settings with internal more
+" :let
+" :set
+" :registers
+" :buffers
+" :function
+" :map
+" :autocmd
+" :augroup
+" :command
+" If needs to seartch, try the following flow
+" :set nomore
+" :redir @a
+" :let or other command
+" :redir END
+" :new
+" :put a
 
 " Manual
 " :help help.txt
