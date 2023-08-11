@@ -19,6 +19,7 @@ setting_zsh () {
   then
     :
   else
+    cat /etc/shells;
     echo This script supports only zsh. ; exit;
   fi
   DOTFILES=( .zshrc .zshrc.pyenv )
