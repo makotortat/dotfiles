@@ -58,6 +58,18 @@ setting_tmux () {
   make_link_dotfiles
 }
 
+setting_git () {
+  if command -v git 1>/dev/null 2>&1; then
+    :
+  else
+    echo "Please install git." ; exit;
+  fi
+
+  DOTFILES=( .git_commit_template )
+  make_link_dotfiles
+  git config --global commit.template ~/.git_commit_template
+}
+
 install_dein () {
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein-installer.vim/master/installer.sh)"
   # curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
@@ -72,6 +84,7 @@ install_tpm () {
 setting_zsh
 setting_neovim
 setting_tmux
+setting_git
 install_dein
 install_tpm
 
