@@ -14,7 +14,7 @@ set noignorecase
 " REF : https://vim.blue/visualization-tab-space/
 set listchars=tab:>>-,trail:-,nbsp:+,eol:↲,extends:»,precedes:«,space:␣
 
-set fileencodings=utf-8,cp932,euc-jp
+set fileencodings=utf-8,cp932,euc-jp,utf-16le
 
 
 """ dein start
