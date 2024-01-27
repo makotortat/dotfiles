@@ -20,7 +20,7 @@ setting_zsh () {
     :
   else
     cat /etc/shells;
-    echo This script supports only zsh. ; exit;
+    echo This script supports only zsh. Please do chsh -s /usr/bin/zsh; exit;
   fi
   DOTFILES=( .zshrc .zshrc.pyenv )
   make_link_dotfiles
