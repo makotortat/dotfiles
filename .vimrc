@@ -16,6 +16,7 @@ set listchars=tab:>>-,trail:-,nbsp:+,eol:↲,extends:»,precedes:«,space:␣
 
 set fileencodings=utf-8,cp932,euc-jp,utf-16le
 
+set tabstop=4
 
 """ dein start
 " REF : https://github.com/Shougo/dein.vim
