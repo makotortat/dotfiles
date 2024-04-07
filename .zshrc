@@ -118,6 +118,7 @@ case ${OSTYPE} in
         alias start_log='script -fqa ~/log/$(date +%Y%m%d_%H%M%S)_${HOST}_$(whoami)_${TITLE}.log'
         ;;
 esac
+alias show_script_log='echo 0 10000 > ~/timelog_for_scriptlog.log; scriptreplay -t ~/timelog_for_scriptlog.log '
 
 # restart shell
 # REF : https://qiita.com/yusabana/items/c4de582c6f85a42817d8
