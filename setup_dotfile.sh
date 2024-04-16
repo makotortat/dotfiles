@@ -1,5 +1,9 @@
 #!/bin/bash -x
 
+# setting
+GIT_USER_NAME=makotortat
+GIT_USER_EMAIL=makotortat@gmail.com
+
 script_dir=$(cd $(dirname $0); pwd)
 
 make_link_dotfiles () {
@@ -30,7 +34,10 @@ setting_neovim () {
   if command -v nvim 1>/dev/null 2>&1; then
     :
   else
-    echo "Please install neovim." ; exit;
+    echo "Please install neovim." ;
+    echo "ex)" ;
+    echo "sudo apt install snapd" 
+    echo "sudo snap install --classic nvim" ; exit;
   fi
   
   if [ -z `echo $XDG_CONFIG_HOME` ];
@@ -68,6 +75,9 @@ setting_git () {
   DOTFILES=( .git_commit_template )
   make_link_dotfiles
   git config --global commit.template ~/.git_commit_template
+  git config --global user.name ${GIT_USER_NAME}
+  git config --global user.email ${GIT_USER_EMAIL}
+  # git config --global core.editor vi
 }
 
 install_dein () {

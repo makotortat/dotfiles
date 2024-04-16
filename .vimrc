@@ -24,11 +24,17 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
-" Required:
-set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+" Set Dein base path (required)
+let s:dein_base = '~/.cache/dein'
 
-" Required:
-call dein#begin('~/.cache/dein') " install dir.
+" Set Dein source path (required)
+let s:dein_src = '~/.cache/dein/repos/github.com/Shougo/dein.vim'
+
+" Set Dein runtime path (required)
+execute 'set runtimepath+=' . s:dein_src
+
+" Call Dein initialization (required)
+call dein#begin(s:dein_base)
 
 " Let dein manage dein
 " Required:
@@ -163,11 +169,15 @@ set ts=2
 call dein#add('simeji/winresizer')
 " Ctrl + e : Resize window
 
-" Required:
+" Finish Dein initialization (required)
 call dein#end()
 
-" Required:
-filetype plugin indent on
+" Attempt to determine the type of a file based on its name and possibly its
+" contents. Use this to allow intelligent auto-indenting for each filetype,
+" and for plugins that are filetype specific.
+filetype indent plugin on
+
+" Enable syntax highlighting
 syntax enable
 
 "

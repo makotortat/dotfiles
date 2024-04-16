@@ -42,21 +42,8 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 
-# alias
 autoload -Uz compinit && compinit
 
-# alias
-if command -v nvim 1>/dev/null 2>&1; then
-  alias vim='nvim'
-  alias vi='nvim'
-  # export MANPAGER="col -b -x|nvim -R -c 'set ft=man nolist nomod noma' -"
-  if ls /etc/redhat-release 1>/dev/null 2>&1; then
-    export MANPAGER="/bin/sh -c \"col -b -x|nvim -R -c 'set ft=man nolist nonu noma' -\""
-  fi
-fi
-alias ll="ls -l"
-## REF : https://orebibou.com/ja/home/201805/20180503_001/
-alias show_all_commands="whence -pm \"*\""
 
 # OS dependencies
 # REF : https://qiita.com/abetomo/items/3df53752edf2bd0855c9
@@ -96,13 +83,33 @@ function show_ssh_pubkey {
  for list in `ls /etc/ssh/*.pub`; do echo ssh-keygen -lf ${list} ;ssh-keygen -lf ${list} ; done
 }
 
-# env
+# Add PATH for snap
+if command -v snap 1>/dev/null 2>&1; then
+  export PATH=/snap/bin:$PATH
+fi
+
+# env for nvim
 export XDG_CONFIG_HOME=~/.config
 if command -v nvim 1>/dev/null 2>&1; then
   export EDITOR=nvim
 else
   export EDITOR=vim
 fi
+
+# alias for nvim
+if command -v nvim 1>/dev/null 2>&1; then
+  alias vim='nvim'
+  alias vi='nvim'
+  # export MANPAGER="col -b -x|nvim -R -c 'set ft=man nolist nomod noma' -"
+  if ls /etc/redhat-release 1>/dev/null 2>&1; then
+    export MANPAGER="/bin/sh -c \"col -b -x|nvim -R -c 'set ft=man nolist nonu noma' -\""
+  fi
+fi
+
+# alias
+alias ll="ls -l"
+## REF : https://orebibou.com/ja/home/201805/20180503_001/
+alias show_all_commands="whence -pm \"*\""
 
 # auto log
 if ls ~/log 1>/dev/null 2>&1; then
@@ -131,3 +138,5 @@ bindkey -e
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 [ -f ~/.zshrc.pyenv ] && source ~/.zshrc.pyenv
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
