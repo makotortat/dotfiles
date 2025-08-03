@@ -134,6 +134,12 @@ alias relogin='exec $SHELL -l'
 # keybind : ctrl + a
 bindkey -e
 
+# tmux alias
+alias tmux_pain_log='tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index}.#{pane_current_path}' | tee ~/log/tmux_pain_$(date +%Y%m%d_%H%M%S)_${HOST}_$(whoami)_${TITLE}.log'
+
+# git alias
+alias git_log_graph_all='git log --oneline --all --graph --decorate --color'
+
 # REF : https://qiita.com/awakia/items/1d5cd440ce58ef4fb8ae
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 [ -f ~/.zshrc.pyenv ] && source ~/.zshrc.pyenv
