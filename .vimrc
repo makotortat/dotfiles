@@ -196,15 +196,35 @@ command Opencurrentfiledir e %:h
 
 " vim -b : edit binary using xxd-format!
 " REF : https://rdera.hatenadiary.org/entry/20081022/1224682665
+" The code was modified.
+" Due to unexpected translation after %!, functions are needed.
+function! s:XXDBufReadPost()
+  silent %!xxd -g 1
+  setlocal ft=xxd
+endfunction
+
+function! s:XXDBufWritePre()
+  silent %!xxd -r 
+endfunction
+
+function! s:XXDBufWritePost()
+  silent %!xxd -g 1
+  setlocal nomodified
+endfunction
+
 augroup BinaryXXD
-  " autocmd!
-  " autocmd BufReadPre  *.bin let &binary =1
-  autocmd BufReadPost * if &binary | silent %!xxd -g 1
-  autocmd BufReadPost * set ft=xxd | endif
-  autocmd BufWritePre * if &binary | %!xxd -r | endif
-  autocmd BufWritePost * if &binary | silent %!xxd -g 1
-  autocmd BufWritePost * set nomod | endif
+  autocmd!
+  " autocmd BufReadPre  *.bin let &binary =1 " if bin file is opened, set &binary as 1
+  autocmd VimEnter * if &binary |
+           \ echohl MoreMsg |
+           \ echom "Vim is in binary mode (-b): xxd form will be used. If not needed, please check the .vimrc." |
+           \ echohl None |
+           \ endif
+  autocmd BufReadPost * if &binary | call s:XXDBufReadPost() | endif
+  autocmd BufWritePre * if &binary | call s:XXDBufWritePre() | endif
+  autocmd BufWritePost * if &binary | call s:XXDBufWritePost() | endif
 augroup END
+
 
 " REF : https://tm.root-n.com/unix:command:vim:vimrc_include
 if filereadable(expand('~/.vimrc.local'))
