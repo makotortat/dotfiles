@@ -14,3 +14,8 @@ Run the following script.
    $ ./setup_dotfile.sh
    ```
 
+If powershell needed, run the following script.
+   ```
+   $ cd ${cloned_dir}
+   $ pwsh -NoProfile -ExecutionPolicy Bypass -File "powershell\profile.ps1" -Install 
+   ```
