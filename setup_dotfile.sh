@@ -35,7 +35,9 @@ setting_neovim () {
     :
   else
     echo "Please install neovim." ;
-    echo "ex)" ;
+    echo "ex1)" ;
+    echo "sudo apt install neovim" 
+    echo "ex2) keeping update" ;
     echo "sudo apt install snapd" 
     echo "sudo snap install --classic nvim" ; exit;
   fi
