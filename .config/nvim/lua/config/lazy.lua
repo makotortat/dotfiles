@@ -25,3 +25,37 @@ require("lazy").setup({
     { import = "plugins" },
   },
 })
+-- -- PowerShell help mappings
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "ps1",
+--   callback = function()
+--
+--     local word = "<cword>"
+--
+--     -- PowerShell help
+--     vim.keymap.set("n", "gp",
+--       ':!pwsh -NoProfile -Command "Get-Help ' .. word .. '"<CR>',
+--       {buffer=true})
+--
+--     -- examples
+--     vim.keymap.set("n", "gP",
+--       ':!pwsh -NoProfile -Command "Get-Help ' .. word .. ' -Examples"<CR>',
+--       {buffer=true})
+--
+--     -- conceptual help
+--     vim.keymap.set("n", "gh",
+--       ':!pwsh -NoProfile -Command "Get-Help about_' .. word .. '"<CR>',
+--       {buffer=true})
+--
+--     -- man fallback
+--     vim.keymap.set("n", "gm",
+--       ':Man ' .. word .. '<CR>',
+--       {buffer=true})
+--
+--     -- open online docs
+--     vim.keymap.set("n", "gK",
+--       ':!pwsh -NoProfile -Command "Get-Help ' .. word .. ' -Online"<CR>',
+--       {buffer=true})
+--
+--   end
+-- })

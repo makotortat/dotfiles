@@ -114,6 +114,7 @@ endif
 " :autocmd
 " :augroup
 " :command
+
 " If needs to seartch, try the following flow
 " :set nomore
 " :redir @a
@@ -127,3 +128,18 @@ endif
 " :help index.txt
 " :lhelp ${word}
 " :lopen
+
+" terminal setting in vim
+" terminal keymapping
+tnoremap <C-c><C-c> <C-\><C-n>
+" default shell selection
+if has('win32') || has('win64')
+  if executable('pwsh')
+    set shell=pwsh
+  endif
+else
+  if executable('zsh')
+    set shell=zsh
+  endif
+endif
+

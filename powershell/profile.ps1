@@ -17,20 +17,17 @@ function Get-WindowsNvimInitPath {
 }
 
 function New-NvimInitLoader {
-    param(
-        [switch]$Force
-    )
 
-    $sourceInit = Join-Path (Get-DotfilesNvimRoot) "init.vim"
-    $targetInit = Get-WindowsNvimInitPath
-    $targetDir  = Split-Path -Parent $targetInit
+    $sourceInit = Join-Path $DotfilesRoot ".config\nvim\init.vim"
+    $targetInit = Join-Path $env:LOCALAPPDATA "nvim\init.vim"
+    $targetDir  = Split-Path $targetInit -Parent
 
-    if (-not (Test-Path -LiteralPath $sourceInit)) {
-        throw "Dotfiles init.vim not found: $sourceInit"
+    if (-not (Test-Path $sourceInit)) {
+        throw "dotfiles init.vim not found: $sourceInit"
     }
 
-    if (-not (Test-Path -LiteralPath $targetDir)) {
-        New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+    if (-not (Test-Path $targetDir)) {
+        New-Item -ItemType Directory -Path $targetDir | Out-Null
     }
 
     $sourceInitVim = $sourceInit -replace '\\','/'
@@ -40,17 +37,38 @@ let s:dotfiles_init = '$sourceInitVim'
 execute 'source' fnameescape(s:dotfiles_init)
 "@
 
-    if ((Test-Path -LiteralPath $targetInit) -and -not $Force) {
-        $current = Get-Content -LiteralPath $targetInit -Raw -ErrorAction SilentlyContinue
-        if ($current -eq $loader) {
-            Write-Host "[INFO] nvim loader already up to date: $targetInit"
-            return
-        }
-        Copy-Item -LiteralPath $targetInit -Destination "$targetInit.bak" -Force
+    # target が存在しない
+    if (-not (Test-Path $targetInit)) {
+        Write-Host "[INFO] creating new init.vim loader"
+        Set-Content $targetInit $loader -Encoding UTF8
+        return
     }
 
-    Set-Content -LiteralPath $targetInit -Value $loader -Encoding UTF8
-    Write-Host "[OK] Wrote nvim loader: $targetInit"
+    # 既存内容取得
+    $current = Get-Content $targetInit -Raw
+
+    # 同じなら何もしない
+    if ($current -eq $loader) {
+        Write-Host "[INFO] loader already installed"
+        return
+    }
+
+    # dotfiles loader かどうか
+    if ($current -match "dotfiles_init") {
+        Write-Host "[INFO] updating existing loader"
+        Copy-Item $targetInit "$targetInit.bak" -Force
+        Set-Content $targetInit $loader -Encoding UTF8
+        return
+    }
+
+    # 完全に別ファイル
+    Write-Warning "existing init.vim detected"
+    Write-Warning "backup created"
+
+    $backup = "$targetInit.userbackup"
+    Copy-Item $targetInit $backup
+
+    Set-Content $targetInit $loader -Encoding UTF8
 }
 
 function Install-Dotfiles {

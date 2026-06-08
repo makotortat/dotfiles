@@ -19,15 +19,18 @@ if has('nvim')
   endif
 
   lua require("config.lazy")
-  
+  execute 'set runtimepath^=' . s:dotfiles
+  lua require("util.helpdispatch")
+ nnoremap K :lua require("util.helpdispatch").dispatch()<CR>
+
+nnoremap gH :lua require("util.helpdispatch").mode="shell"<CR>
+nnoremap gL :lua require("util.helpdispatch").mode="lsp"<CR>
+nnoremap gV :lua require("util.helpdispatch").mode="vim"<CR> 
   augroup arduino_filetype
     autocmd!
     autocmd BufNewFile,BufRead *.ino set filetype=cpp
   augroup END
 
-  " lua require('config.options')
-  " lua require('config.keymaps')
-  " lua require('lazy').setup('plugins')
 else
   " Vim: vim-plug 側へ
   " source ~/vimfiles/core/plugins_vim.vim
