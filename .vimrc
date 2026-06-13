@@ -27,6 +27,12 @@ endif
 " Set Dein base path (required)
 let s:dein_base = '~/.cache/dein'
 
+" Neovim 0.11 may identify a shared init.vim as _defaults.lua. Keep using the
+" established init.vim cache instead of silently creating a new empty cache.
+if has('nvim')
+  let g:dein#cache_directory = expand(s:dein_base) . '/.cache/init.vim'
+endif
+
 " Set Dein source path (required)
 let s:dein_src = '~/.cache/dein/repos/github.com/Shougo/dein.vim'
 
@@ -34,7 +40,8 @@ let s:dein_src = '~/.cache/dein/repos/github.com/Shougo/dein.vim'
 execute 'set runtimepath+=' . s:dein_src
 
 " Call Dein initialization (required)
-call dein#begin(s:dein_base)
+" Specify this vimrc explicitly so dein can detect configuration changes.
+call dein#begin(s:dein_base, [expand('<sfile>')])
 
 " Let dein manage dein
 " Required:
@@ -108,7 +115,19 @@ let mapleader = "\<Space>"
 
 " REF : https://liginc.co.jp/469142
 let g:fzf_buffers_jump = 1
-nnoremap <silent> <Leader>ff :<C-u>Ag<CR>
+function! SearchBackend()
+  return executable('rg') ? 'rg' : executable('ag') ? 'ag' : 'grep'
+endfunction
+function! FzfGrep()
+  if SearchBackend() ==# 'rg'
+    Rg
+  elseif SearchBackend() ==# 'ag'
+    Ag
+  else
+    Grep
+  endif
+endfunction
+nnoremap <silent> <Leader>ff :<C-u>call FzfGrep()<CR>
 nnoremap <silent> <Leader>fh :<C-u>History<CR>
 nnoremap <silent> <Leader>ft :<C-u>call fzf#vim#tags(expand('<cword>'))<CR>
 nnoremap <silent> <Leader>fb :<C-u>Buffers<CR>
@@ -125,16 +144,25 @@ nnoremap <silent> <Leader>fm :<C-u>Marks<CR>
       autocmd FileType fzf tnoremap <buffer> <leader>z <Esc>
   augroup END
 
-" REF : https://blog.monochromegane.com/blog/2013/09/18/ag-and-unite/
+" Prefer ripgrep, then fall back to ag and grep for Unite's grep backend.
 call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
 
 nnoremap <silent> <Space><Space>g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
 nnoremap <silent> <Space><Space><Space> :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
 
-if executable('ag')
+let s:search_backend = SearchBackend()
+if s:search_backend ==# 'rg'
+  let g:unite_source_grep_command = 'rg'
+  let g:unite_source_grep_default_opts = '--column --line-number --no-heading --color=never --ignore-case --with-filename'
+  let g:unite_source_grep_recursive_opt = ''
+elseif s:search_backend ==# 'ag'
   let g:unite_source_grep_command = 'ag'
   let g:unite_source_grep_default_opts = '--nogroup --nocolor --column --ignore-case'
   let g:unite_source_grep_recursive_opt = ''
+else
+  let g:unite_source_grep_command = 'grep'
+  let g:unite_source_grep_default_opts = '-nH'
+  let g:unite_source_grep_recursive_opt = '-r'
 endif
 
 " REF : https://github.com/itchyny/calendar.vim
@@ -155,7 +183,6 @@ map P <Plug>(operator-replace)
 
 " REF : https://github.com/adi/vim-indent-rainbow
 call dein#add('adi/vim-indent-rainbow')
-call togglerb#map("<F9>")
 let g:rainbow_colors_black= [ 238, 239, 240, 241, 242, 243 ]
 let g:rainbow_colors_color= [ 226, 192, 195, 189, 225, 221 ]
 set ts=2
@@ -171,6 +198,60 @@ call dein#add('simeji/winresizer')
 
 " Finish Dein initialization (required)
 call dein#end()
+
+" The plugin defines its command and Plug mappings in an autoload file.
+" Source it explicitly, then add true-color backgrounds for modern terminals.
+if !empty(globpath(&runtimepath, 'autoload/togglerb.vim'))
+  runtime autoload/togglerb.vim
+
+  function! s:XtermColorToHex(color) abort
+    let l:palette = [
+          \ '#000000', '#800000', '#008000', '#808000',
+          \ '#000080', '#800080', '#008080', '#c0c0c0',
+          \ '#808080', '#ff0000', '#00ff00', '#ffff00',
+          \ '#0000ff', '#ff00ff', '#00ffff', '#ffffff',
+          \ ]
+    if a:color < 16
+      return l:palette[a:color]
+    elseif a:color < 232
+      let l:levels = [0, 95, 135, 175, 215, 255]
+      let l:index = a:color - 16
+      return printf('#%02x%02x%02x',
+            \ l:levels[l:index / 36],
+            \ l:levels[(l:index % 36) / 6],
+            \ l:levels[l:index % 6])
+    endif
+
+    let l:level = 8 + ((a:color - 232) * 10)
+    return printf('#%02x%02x%02x', l:level, l:level, l:level)
+  endfunction
+
+  function! s:ApplyRainbowGuiColors() abort
+    let l:colors = &background ==# 'dark'
+          \ ? g:rainbow_colors_black
+          \ : g:rainbow_colors_color
+    for l:color in l:colors
+      execute printf('highlight colorgroup_%d ctermbg=%d guibg=%s',
+            \ l:color, l:color, s:XtermColorToHex(l:color))
+    endfor
+  endfunction
+
+  function! s:ToggleIndentRainbow() abort
+    call rainbow#toggle()
+    if exists('w:ms') && !empty(w:ms)
+      call s:ApplyRainbowGuiColors()
+    endif
+  endfunction
+
+  silent! delcommand ToggleRB
+  command! ToggleRB call <SID>ToggleIndentRainbow()
+  nmap <silent> <Plug>ToggleRainbow :<C-u>ToggleRB<CR>
+  imap <silent> <Plug>ToggleRainbow <C-o>:ToggleRB<CR>
+  xmap <silent> <Plug>ToggleRainbow <Esc>:ToggleRB<CR>gv
+  nmap <silent> <F9> <Plug>ToggleRainbow
+  imap <silent> <F9> <Plug>ToggleRainbow
+  xmap <silent> <F9> <Plug>ToggleRainbow
+endif
 
 " Attempt to determine the type of a file based on its name and possibly its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
