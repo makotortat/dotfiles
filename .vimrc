@@ -21,6 +21,9 @@ set tabstop=4
 " Make Ctrl-C finish Visual-block insert instead of aborting it.
 inoremap <C-c> <Esc>
 
+" for terminal in vim
+tnoremap <C-c><C-c> <C-\><C-n>
+
 """ dein start
 " REF : https://github.com/Shougo/dein.vim
 if &compatible
