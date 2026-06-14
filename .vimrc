@@ -18,6 +18,9 @@ set fileencodings=utf-8,cp932,euc-jp,utf-16le
 
 set tabstop=4
 
+" Make Ctrl-C finish Visual-block insert instead of aborting it.
+inoremap <C-c> <Esc>
+
 """ dein start
 " REF : https://github.com/Shougo/dein.vim
 if &compatible
