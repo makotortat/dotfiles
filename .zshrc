@@ -146,3 +146,34 @@ alias git_log_graph_all='git log --oneline --all --graph --decorate --color'
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Images
+if command -v feh 1>/dev/null 2>&1; then
+  alias -s png=feh
+  alias -s jpg=feh
+  alias -s jpeg=feh
+  alias -s webp=feh
+  alias -s bmp=feh
+  alias -s tif=feh
+  alias -s tiff=feh
+fi
+
+# Video
+if command -v ffplay 1>/dev/null 2>&1; then
+  alias -s mp4='ffplay -hide_banner -loglevel error -autoexit'
+  alias -s mkv='ffplay -hide_banner -loglevel error -autoexit'
+  alias -s webm='ffplay -hide_banner -loglevel error -autoexit'
+  alias -s mov='ffplay -hide_banner -loglevel error -autoexit'
+fi
+
+# 3D models
+if command -v f3d 1>/dev/null 2>&1; then
+  alias -s stl='f3d --up +Z --axis --grid'
+  alias -s obj='f3d --up +Z --axis --grid'
+  alias -s ply='f3d --up +Z --axis --grid'
+  alias -s 3mf='f3d --up +Z --axis --grid'
+  alias -s glb='f3d --up +Z --axis --grid'
+  alias -s gltf='f3d --up +Z --axis --grid'
+  alias -s step='f3d --up +Z --axis --grid'
+  alias -s stp='f3d --up +Z --axis --grid'
+fi
