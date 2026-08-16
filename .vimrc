@@ -58,6 +58,14 @@ call dein#add('Shougo/neosnippet.vim')
 call dein#add('Shougo/neosnippet-snippets')
 call dein#add('Shougo/unite.vim')
 
+" markdown
+" REF : https://github.com/preservim/vim-markdown
+call dein#add('godlygeek/tabular')
+call dein#add('preservim/vim-markdown')
+let g:vim_markdown_follow_anchor = 1
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
 
 " highlight
 " REF : https://github.com/t9md/vim-quickhl
