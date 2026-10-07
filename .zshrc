@@ -180,6 +180,7 @@ fi
 
 session_status() {
     local user host tty_name shell_name virt os_name tmux_info
+    local ssh_client_ip ssh_client_port ssh_server_ip ssh_server_port
 
     user="$(id -un 2>/dev/null || printf '?')"
     host="$(hostname 2>/dev/null || printf '?')"
@@ -188,42 +189,42 @@ session_status() {
     virt="$(systemd-detect-virt 2>/dev/null)"
     [ -n "$virt" ] || virt="none"
 
-    printf 'user:    %s\n' "$user"
-    printf 'host:    %s\n' "$host"
-    printf 'cwd:     %s\n' "$PWD"
-    printf 'tty:     %s\n' "$tty_name"
-    printf 'shell:   %s\n' "$shell_name"
-    printf 'virt:    %s\n' "$virt"
+    printf '%-10s %s\n' 'user:'  "$user"
+    printf '%-10s %s\n' 'host:'  "$host"
+    printf '%-10s %s\n' 'cwd:'   "$PWD"
+    printf '%-10s %s\n' 'tty:'   "$tty_name"
+    printf '%-10s %s\n' 'shell:' "$shell_name"
+    printf '%-10s %s\n' 'virt:'  "$virt"
 
     if [ -n "${SSH_CONNECTION:-}" ]; then
-      set -- $SSH_CONNECTION
-      printf 'ssh-from: %s:%s\n' "$1" "$2"
-      printf 'ssh-to:   %s:%s\n' "$3" "$4"
+        read ssh_client_ip ssh_client_port ssh_server_ip ssh_server_port \
+            <<< "$SSH_CONNECTION"
+
+        printf '%-10s %s:%s\n' 'ssh-from:' "$ssh_client_ip" "$ssh_client_port"
+        printf '%-10s %s:%s\n' 'ssh-to:'   "$ssh_server_ip" "$ssh_server_port"
     else
-      printf 'ssh:      none\n'
+        printf '%-10s %s\n' 'ssh:' 'none'
     fi
 
     if [ -n "${TMUX:-}" ] && command -v tmux >/dev/null 2>&1; then
         tmux_info="$(tmux display-message -p '#S:#I.#P' 2>/dev/null)"
-        printf 'tmux:    %s\n' "${tmux_info:-unknown}"
+        printf '%-10s %s\n' 'tmux:' "${tmux_info:-unknown}"
     else
-        printf 'tmux:    none\n'
+        printf '%-10s %s\n' 'tmux:' 'none'
     fi
 
     if [ "$1" = "-v" ]; then
         if [ -r /etc/os-release ]; then
-            os_name="$(
-                . /etc/os-release
-                printf '%s' "${PRETTY_NAME:-${NAME:-unknown}}"
-            )"
+            . /etc/os-release
+            os_name="${PRETTY_NAME:-${NAME:-unknown}}"
         else
             os_name="unknown"
         fi
 
-        printf 'os:      %s\n' "$os_name"
-        printf 'kernel:  %s\n' "$(uname -r 2>/dev/null)"
-        printf 'arch:    %s\n' "$(uname -m 2>/dev/null)"
-        printf 'id:      %s\n' "$(id 2>/dev/null)"
+        printf '%-10s %s\n' 'os:'     "$os_name"
+        printf '%-10s %s\n' 'kernel:' "$(uname -r 2>/dev/null)"
+        printf '%-10s %s\n' 'arch:'   "$(uname -m 2>/dev/null)"
+        printf '%-10s %s\n' 'id:'     "$(id 2>/dev/null)"
 
         if command -v ip >/dev/null 2>&1; then
             printf '\nnetwork:\n'
@@ -231,7 +232,8 @@ session_status() {
         fi
 
         if command -v uptime >/dev/null 2>&1; then
-            printf '\nuptime:  %s\n' "$(uptime -p 2>/dev/null)"
+            printf '\nuptime:\n'
+            uptime -p
         fi
     fi
 }
