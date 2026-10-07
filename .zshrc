@@ -177,3 +177,61 @@ if command -v f3d 1>/dev/null 2>&1; then
   alias -s step='f3d --up +Z --axis --grid'
   alias -s stp='f3d --up +Z --axis --grid'
 fi
+
+session_status() {
+    local user host tty_name shell_name virt os_name tmux_info
+
+    user="$(id -un 2>/dev/null || printf '?')"
+    host="$(hostname 2>/dev/null || printf '?')"
+    tty_name="$(tty 2>/dev/null || printf 'none')"
+    shell_name="$(ps -p $$ -o comm= 2>/dev/null)"
+    virt="$(systemd-detect-virt 2>/dev/null)"
+    [ -n "$virt" ] || virt="none"
+
+    printf 'user:    %s\n' "$user"
+    printf 'host:    %s\n' "$host"
+    printf 'cwd:     %s\n' "$PWD"
+    printf 'tty:     %s\n' "$tty_name"
+    printf 'shell:   %s\n' "$shell_name"
+    printf 'virt:    %s\n' "$virt"
+
+    if [ -n "${SSH_CONNECTION:-}" ]; then
+      set -- $SSH_CONNECTION
+      printf 'ssh-from: %s:%s\n' "$1" "$2"
+      printf 'ssh-to:   %s:%s\n' "$3" "$4"
+    else
+      printf 'ssh:      none\n'
+    fi
+
+    if [ -n "${TMUX:-}" ] && command -v tmux >/dev/null 2>&1; then
+        tmux_info="$(tmux display-message -p '#S:#I.#P' 2>/dev/null)"
+        printf 'tmux:    %s\n' "${tmux_info:-unknown}"
+    else
+        printf 'tmux:    none\n'
+    fi
+
+    if [ "$1" = "-v" ]; then
+        if [ -r /etc/os-release ]; then
+            os_name="$(
+                . /etc/os-release
+                printf '%s' "${PRETTY_NAME:-${NAME:-unknown}}"
+            )"
+        else
+            os_name="unknown"
+        fi
+
+        printf 'os:      %s\n' "$os_name"
+        printf 'kernel:  %s\n' "$(uname -r 2>/dev/null)"
+        printf 'arch:    %s\n' "$(uname -m 2>/dev/null)"
+        printf 'id:      %s\n' "$(id 2>/dev/null)"
+
+        if command -v ip >/dev/null 2>&1; then
+            printf '\nnetwork:\n'
+            ip -brief address
+        fi
+
+        if command -v uptime >/dev/null 2>&1; then
+            printf '\nuptime:  %s\n' "$(uptime -p 2>/dev/null)"
+        fi
+    fi
+}
