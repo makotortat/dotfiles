@@ -142,7 +142,8 @@ install_tpm () {
 
   mkdir -p "${HOME}/.tmux/plugins"
   git clone https://github.com/tmux-plugins/tpm "${HOME}/.tmux/plugins/tpm"
-  echo try install tmux plugins
+  echo Please press prefix + I (capital i, as in Install) to fetch the plugin. 
+  echo At first, try install tmux plugins now.
   ~/.tmux/plugins/tpm/bin/install_plugins
 }
 
