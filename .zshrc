@@ -177,3 +177,63 @@ if command -v f3d 1>/dev/null 2>&1; then
   alias -s step='f3d --up +Z --axis --grid'
   alias -s stp='f3d --up +Z --axis --grid'
 fi
+
+session_status() {
+    local user host tty_name shell_name virt os_name tmux_info
+    local ssh_client_ip ssh_client_port ssh_server_ip ssh_server_port
+
+    user="$(id -un 2>/dev/null || printf '?')"
+    host="$(hostname 2>/dev/null || printf '?')"
+    tty_name="$(tty 2>/dev/null || printf 'none')"
+    shell_name="$(ps -p $$ -o comm= 2>/dev/null)"
+    virt="$(systemd-detect-virt 2>/dev/null)"
+    [ -n "$virt" ] || virt="none"
+
+    printf '%-10s %s\n' 'user:'  "$user"
+    printf '%-10s %s\n' 'host:'  "$host"
+    printf '%-10s %s\n' 'cwd:'   "$PWD"
+    printf '%-10s %s\n' 'tty:'   "$tty_name"
+    printf '%-10s %s\n' 'shell:' "$shell_name"
+    printf '%-10s %s\n' 'virt:'  "$virt"
+
+    if [ -n "${SSH_CONNECTION:-}" ]; then
+        read ssh_client_ip ssh_client_port ssh_server_ip ssh_server_port \
+            <<< "$SSH_CONNECTION"
+
+        printf '%-10s %s:%s\n' 'ssh-from:' "$ssh_client_ip" "$ssh_client_port"
+        printf '%-10s %s:%s\n' 'ssh-to:'   "$ssh_server_ip" "$ssh_server_port"
+    else
+        printf '%-10s %s\n' 'ssh:' 'none'
+    fi
+
+    if [ -n "${TMUX:-}" ] && command -v tmux >/dev/null 2>&1; then
+        tmux_info="$(tmux display-message -p '#S:#I.#P' 2>/dev/null)"
+        printf '%-10s %s\n' 'tmux:' "${tmux_info:-unknown}"
+    else
+        printf '%-10s %s\n' 'tmux:' 'none'
+    fi
+
+    if [ "$1" = "-v" ]; then
+        if [ -r /etc/os-release ]; then
+            . /etc/os-release
+            os_name="${PRETTY_NAME:-${NAME:-unknown}}"
+        else
+            os_name="unknown"
+        fi
+
+        printf '%-10s %s\n' 'os:'     "$os_name"
+        printf '%-10s %s\n' 'kernel:' "$(uname -r 2>/dev/null)"
+        printf '%-10s %s\n' 'arch:'   "$(uname -m 2>/dev/null)"
+        printf '%-10s %s\n' 'id:'     "$(id 2>/dev/null)"
+
+        if command -v ip >/dev/null 2>&1; then
+            printf '\nnetwork:\n'
+            ip -brief address
+        fi
+
+        if command -v uptime >/dev/null 2>&1; then
+            printf '\nuptime:\n'
+            uptime -p
+        fi
+    fi
+}
